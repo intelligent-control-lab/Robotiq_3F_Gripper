@@ -88,21 +88,20 @@ class Gripper():
         self.command = Robotiq3FGripperRobotOutput();
         self.goal = np.zeros(4) # target POA, POB, POC, POS
         self.joint = np.zeros(12) # joint angle of 12 finger joints for gazebo and avp simulation 
-        
+        self.real_pos = np.zeros(4) # Real position of the fingers from the gripper input
+
 
     def gripper_state_callback(self, data):
         self.state = data
+        self.real_pos[0] = data.gPOA
+        self.real_pos[1] = data.gPOB
+        self.real_pos[2] = data.gPOB
+        self.real_pos[3] = data.gPOS
         print(statusInterpreter(self.state))
         
     def gripper_goal_callback(self, data):
         for i in range(4):
             self.goal[i] = data.data[i]
-        
-        self.joint = self.controlGripperRegister(POA = self.goal[0],
-                                                 POB = self.goal[1],
-                                                 POC = self.goal[2],
-                                                 POS = self.goal[3],
-                                                 ICF = True)
         
     def controlGripperRegister(self, POA = 0, POB = 0, POC = 0, POS = 137, ICF = False):
         '''
@@ -176,6 +175,19 @@ class Gripper():
         # Calculate the angle of each joint (12 in total)
         # And publish for the position control in simulation 
         
+        if self.state.gIMC != 3:
+            self.joint = self.controlGripperRegister(POA = self.goal[0],
+                                                    POB = self.goal[1],
+                                                    POC = self.goal[2],
+                                                    POS = self.goal[3],
+                                                    ICF = True)
+        else:
+            self.joint = self.controlGripperRegister(POA = self.real_pos[0],
+                                                    POB = self.real_pos[1],
+                                                    POC = self.real_pos[2],
+                                                    POS = self.real_pos[3],
+                                                    ICF = True)
+
         for i in range(len(Simulation_controller_topic)):
             joint_sim_msg = Float64()
             joint_sim_msg.data = self.joint[i] / 180 * np.pi
@@ -185,13 +197,10 @@ class Gripper():
         joint_msg.data = self.joint
         self.pub_joint.publish(joint_msg)
         
-        # rospy.sleep(0.1)
-
         
     def gripper_publish_real(self):
         
         self.pub_command.publish(self.command)
-        # rospy.sleep(0.1)
 
 
 
