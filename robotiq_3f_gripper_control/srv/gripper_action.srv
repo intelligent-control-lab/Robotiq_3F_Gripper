@@ -1,0 +1,3 @@
+std_msgs/UInt8 gripper_state
+---
+bool finished

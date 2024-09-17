@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- <group ns="/fanuc_gazebo"> -->
+    <arg name = "robot_arm" default="FANUC"/>
+    <!-- <arg name="model" value="fanuc_gazebo"/> -->
+    <node pkg="robotiq_3f_gripper_control" name="robotiq_3f_gripper_tcp_node" type="Robotiq3FGripperTcpNode.py" output="screen">
+      <!-- <param name="gripper_ip_address" value="192.168.1.11" /> -->
+    </node>
+    <node pkg="robotiq_3f_gripper_control" name="robotiq_3f_gripper_control_service" type="Robotiq3FGripperController.py" output="screen">
+    </node>
+
+</launch> 
