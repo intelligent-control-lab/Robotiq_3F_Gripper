@@ -97,7 +97,6 @@ class Gripper():
         self.real_pos[1] = data.gPOB
         self.real_pos[2] = data.gPOB
         self.real_pos[3] = data.gPOS
-        print(statusInterpreter(self.state))
         
     def gripper_goal_callback(self, data):
         for i in range(4):
@@ -150,13 +149,13 @@ class Gripper():
         self.command.rACT = 1
         self.command.rGTO = 1
         self.command.rSPA = 255
-        self.command.rFRA = 150
+        self.command.rFRA = 20
         self.command.rSPB = 255
-        self.command.rFRB = 150
+        self.command.rFRB = 20
         self.command.rSPC = 255
-        self.command.rFRC = 150
+        self.command.rFRC = 20
         self.command.rSPS = 255
-        self.command.rFRS = 150
+        self.command.rFRS = 20
         self.command.rICF = 1
         self.command.rICS = 1
         self.gripper_publish_real()
